@@ -11,33 +11,45 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public class UnZipper {
-	private static final int TAMANHO_BUFFER = 4024;
+	private static final int TAMANHO_BUFFER = 2048;
 	
 	/**
 	 * Extrai o arquivo zip informado para a pasta informada.
 	 * @param arquivoZip arquivo zip a ser extraido.
 	 * @param pasta String que representa a pasta para o arquivo será extraido.
+	 * 
+	 * @return <code>true</code> se a não houve erros na extração ou <code>false</code> caso contrário.
+	 * 
+	 * @throws IllegalArgumentException se pasta não for uma pasta válida.
 	 */
-	public void extrair(File arquivoZip, String pasta) {
-		extrair(arquivoZip, new File(pasta));
+	public Boolean extrair(File arquivoZip, String pasta) {
+		return extrair(arquivoZip, new File(pasta));
 	}
 	
 	/**
 	 * Extrai o arquivo zip informado para a pasta informada.
 	 * @param arquivoZip String que representa o arquivo (com caminho completo) a ser extraido.
 	 * @param pasta Local onde o arquivo zip será extraido.
+	 * 
+	 * @return <code>true</code> se a não houve erros na extração ou <code>false</code> caso contrário.
+	 * 
+	 * @throws IllegalArgumentException se pasta não for uma pasta válida.
 	 */
-	public void extrair(String arquivoZip, File pasta) {
-		extrair(new File(arquivoZip), pasta);
+	public Boolean extrair(String arquivoZip, File pasta) {
+		return extrair(new File(arquivoZip), pasta);
 	}
 	
 	/**
 	 * Extrai o arquivo zip informado para a pasta informada.
 	 * @param arquivoZip String que representa o arquivo (com caminho completo) a ser extraido.
 	 * @param pasta String que representa o local (com caminho completo) onde o arquivo será extraido.
+	 * 
+	 * @return <code>true</code> se a não houve erros na extração ou <code>false</code> caso contrário.
+	 * 
+	 * @throws IllegalArgumentException se pasta não for uma pasta válida.
 	 */
-	public void extrair(String arquivoZip, String pasta) {
-		extrair(new File(arquivoZip), new File(pasta));
+	public Boolean extrair(String arquivoZip, String pasta) {
+		return extrair(new File(arquivoZip), new File(pasta));
 	}
 	
 	/**
@@ -45,16 +57,12 @@ public class UnZipper {
 	 * @param arquivoZip arquivo zip que será extraido.
 	 * @param pasta local onde o arquivo será extraído. Caso a pasta não exista, ela será criada.
 	 * 
-	 * @throws IllegalArgumentException se pasta não for uma pasta.
+	 * @return <code>true</code> se a não houve erros na extração ou <code>false</code> caso contrário.
+	 * 
+	 * @throws IllegalArgumentException se pasta não for uma pasta válida.
 	 */
-	public void extrair(File arquivoZip, File pasta) {
-		if(!pasta.exists()) {
-			pasta.mkdir();
-		}
-		
-		if(!pasta.isDirectory()) {
-			throw new IllegalArgumentException("A pasta informada para extração não é válida");
-		}
+	public Boolean extrair(File arquivoZip, File pasta) {
+		Boolean conseguiuExtrair = true;
 		
 		ZipFile zip = null;
 		File arquivo = null;
@@ -62,7 +70,16 @@ public class UnZipper {
 		OutputStream os = null;
 		byte[] buffer = new byte[TAMANHO_BUFFER];
 		
+		
 		try {
+			if(!pasta.exists()) {
+				pasta.mkdirs();
+			}
+			
+			if(!pasta.isDirectory() || !pasta.exists()) {
+				throw new IllegalArgumentException("A pasta informada para extração não é válida");
+			}
+			
 			zip = new ZipFile(arquivoZip);
 			Enumeration<? extends ZipEntry> entradas = zip.entries();
 			
@@ -73,12 +90,12 @@ public class UnZipper {
 				
 				if(entradaAtual.isDirectory() && !arquivo.exists()) {
 					arquivo.mkdirs();
+					continue;
 				}
 				
 				if(!arquivo.getParentFile().exists()) {
 					arquivo.getParentFile().mkdirs();
 				}
-				
 				
 				try {
 					is = zip.getInputStream(entradaAtual);
@@ -113,17 +130,23 @@ public class UnZipper {
 				}
 			}
 		} catch (ZipException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			conseguiuExtrair = false;
+			
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			conseguiuExtrair = false;
+			
 		} finally {
 			if(zip != null) {
 				try {
 					zip.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("Erro ao fechar arquivo zip");;
 				}
 			}
 		}
+		
+		return conseguiuExtrair;
 	}
 }
