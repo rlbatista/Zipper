@@ -13,6 +13,20 @@ import java.util.zip.ZipOutputStream;
 public class Zipper {
 	private static final int TAMANHO_BUFFER = 2048;
 	
+	/**
+	 * Cria um arquivo zip informado em <code>arquivoZip</code> com o conteúdo de <code>arquivos</code>.<br>
+	 * Detalhes do parametro <code>arquivos</code>
+	 * <ul>
+	 * <li>Pode receber tanto arquivo quanto pastas.</li>
+	 * <li>Se receber uma pasta, todo o ser conteúdo com pastas e subpastas serão compactados.</li>
+	 * <li>Pode ser informado um ou mais (separados por virgula).</li>
+	 * </ul>
+	 * 
+	 * @param arquivoZip Arquivo zip que será gerado.
+	 * @param arquivos Arquivos/Pastas que serão compactados no zip. 
+	 * 
+	 * @throws IOException
+	 */
 	public void criarZip(File arquivoZip, File... arquivos) throws IOException {
 		FileOutputStream fos = null;
 		BufferedOutputStream bos = null;
@@ -45,6 +59,20 @@ public class Zipper {
 		}
 	}
 
+	/**
+	 * Grava no <code>OutputStream</code> informado o arquivo zip gerado com o conteúdo de <code>arquivos</code><br>
+	 * Detalhes do parametro <code>arquivos</code>
+	 * <ul>
+	 * <li>Pode receber tanto arquivo quanto pastas.</li>
+	 * <li>Se receber uma pasta, todo o ser conteúdo com pastas e subpastas serão compactados.</li>
+	 * <li>Pode ser informado um ou mais (separados por virgula).</li>
+	 * </ul>
+	 * 	 * 
+	 * @param osZip Stream de saída para onde será enviado o zip gerado.
+	 * @param arquivos Arquivos/Pastas que serão compactados no zip.
+	 * 
+	 * @throws IOException
+	 */
 	public void criarZip(OutputStream osZip, File... arquivos) throws IOException {
 		if(arquivos == null || arquivos.length < 1) {
 			throw new IllegalArgumentException("Adicione ao menos um arquivo ou diretórios para compatação");
