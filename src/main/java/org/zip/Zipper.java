@@ -12,8 +12,8 @@ import java.util.zip.ZipOutputStream;
 
 public class Zipper {
 	private static final int TAMANHO_BUFFER = 2048;
-
-	public void criarZip(File arquivoZip, File[] arquivos) throws IOException {
+	
+	public void criarZip(File arquivoZip, File... arquivos) throws IOException {
 		FileOutputStream fos = null;
 		BufferedOutputStream bos = null;
 		
@@ -45,7 +45,7 @@ public class Zipper {
 		}
 	}
 
-	public void criarZip(OutputStream os, File[] arquivos) throws IOException {
+	public void criarZip(OutputStream osZip, File... arquivos) throws IOException {
 		if(arquivos == null || arquivos.length < 1) {
 			throw new IllegalArgumentException("Adicione ao menos um arquivo ou diretórios para compatação");
 		}
@@ -53,7 +53,7 @@ public class Zipper {
 		ZipOutputStream zos = null;
 		
 		try {
-			zos = new ZipOutputStream(os);
+			zos = new ZipOutputStream(osZip);
 			
 			for (File arquivoAtual : arquivos) {
 				String caminhoInicial = arquivoAtual.getParent();

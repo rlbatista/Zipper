@@ -2,6 +2,7 @@ package org.zip;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -28,6 +29,7 @@ public class TesteZip {
 		File conteudoASerCompactado = new File(PASTA_COMPACTAR);
 		
 		z.criarZip(zipSaida, new File[]{conteudoASerCompactado});
+		z.criarZip(new FileOutputStream("f://zip-teste/blabla.zip"), new File("t://PFIles"), new File("t://New Folder"));
 	}
 
 	private static void testeLeituraZipComZipInputStream() throws IOException {
